@@ -1,4 +1,4 @@
-package com.example.inventorymgtbackend.entity;
+package com.example.inventory_mgt_backend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,5 +51,10 @@ public class Warehouse {
 
     public void setUsedVolume(int usedVolume) {
         this.usedVolume = usedVolume;
+    }
+
+    // 新增容积校验方法
+    public boolean canUpdateVolume(int volumeChange) {
+        return usedVolume + volumeChange <= totalVolume && usedVolume + volumeChange >= 0;
     }
 }

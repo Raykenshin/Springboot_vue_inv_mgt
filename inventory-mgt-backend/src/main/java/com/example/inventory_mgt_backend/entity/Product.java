@@ -1,4 +1,6 @@
-package com.example.inventorymgtbackend.entity;
+package com.example.inventory_mgt_backend.entity;
+
+import com.example.Warehouse;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

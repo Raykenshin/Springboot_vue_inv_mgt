@@ -94,30 +94,33 @@ const handleBarcodeInput = async () => {
   
   const submitInbound = async () => {
     try {
-      if (productExists.value) {
-        // 更新已有产品数量
-        const productId = selectedProduct.value.id;
-        await axios.post(`http://localhost:8080/api/products/updateQuantity/${productId}/${quantity.value}`);
-        message.value = `${productNumber.value} 更新成功`;
-      } else {
-        // 创建新产品并入库
-        const newProduct = {
-          productNumber: productNumber.value,
-          name: '新商品', // 这里需要根据实际情况填写
-          color: '无', // 这里需要根据实际情况填写
-          quantity: quantity.value,
-          nationalStandardNumber: barcode.value,
-          warehouse: { name: selectedWarehouse.value }
-        };
-        await axios.post('http://localhost:8080/api/products', newProduct);
-        message.value = `${productNumber.value} 入库成功`;
-      }
-      // 刷新当前仓库产品列表
-      // 这里需要根据实际情况添加根据仓库查询产品的接口
-      const response = await axios.get('http://localhost:8080/api/products');
-      currentWarehouseProducts.value = response.data;
-    } catch (error) {
-      console.error('Error submitting inbound:', error);
+        if (productExists.value) {
+            // 更新已有产品数量
+            const productId = selectedProduct.value.id;
+            await axios.post(`http://localhost:8080/api/products/updateQuantity/${productId}/${quantity.value}`);
+            message.value = `${productNumber.value} 更新成功`;
+        } else {
+            // 创建新产品并入库
+            const newProduct = {
+                productNumber: productNumber.value,
+                name: '新商品', // 这里需要根据实际情况填写
+                color: '无', // 这里需要根据实际情况填写
+                quantity: quantity.value,
+                nationalStandardNumber: barcode.value,
+                warehouse: { name: selectedWarehouse.value }
+            };
+            await axios.post('http://localhost:8080/api/products', newProduct);
+            message.value = `${productNumber.value} 入库成功`;
+        }
+        // 刷新当前仓库产品列表
+        // 这里需要根据实际情况添加根据仓库查询产品的接口
+    } catch (error: any) {
+        if (error.response && error.response.data.message) {
+            message.value = error.response.data.message;
+        } else {
+            message.value = '入库操作失败，请稍后重试';
+        }
+        console.error('Error submitting inbound:', error);
     }
-  };
+};
   </script>

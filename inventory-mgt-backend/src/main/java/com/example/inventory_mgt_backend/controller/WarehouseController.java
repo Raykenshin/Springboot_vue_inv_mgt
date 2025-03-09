@@ -1,4 +1,4 @@
-package com.example.inventorymgtbackend.controller;
+package com.example.inventory_mgt_backend.controller;
 
 import com.example.inventorymgtbackend.entity.Warehouse;
 import com.example.inventorymgtbackend.service.WarehouseService;

@@ -1,4 +1,4 @@
-package com.example.inventorymgtbackend.service;
+package com.example.inventory_mgt_backend.service;
 
 import com.example.inventorymgtbackend.entity.Product;
 import com.example.inventorymgtbackend.entity.Warehouse;
@@ -10,9 +10,11 @@ import java.util.List;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final WarehouseService warehouseService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, WarehouseService warehouseService) {
         this.productRepository = productRepository;
+        this.warehouseService = warehouseService;
     }
 
     public List<Product> getProductsByProductNumber(String productNumber) {
@@ -30,13 +32,14 @@ public class ProductService {
     public void updateProductQuantity(Long productId, int quantityChange) {
         Product product = productRepository.findById(productId).orElse(null);
         if (product != null) {
-            product.setQuantity(product.getQuantity() + quantityChange);
-            productRepository.save(product);
-
-            // 更新仓库使用容积
             Warehouse warehouse = product.getWarehouse();
-            warehouse.setUsedVolume(warehouse.getUsedVolume() + quantityChange);
-            // 这里可以添加更多的容积校验逻辑
+            if (warehouseService.updateWarehouseVolume(warehouse.getId(), quantityChange)) {
+                product.setQuantity(product.getQuantity() + quantityChange);
+                productRepository.save(product);
+            } else {
+                // 处理容积更新失败的情况，如抛出异常或记录日志
+                throw new RuntimeException("仓库容积不足，无法更新产品数量");
+            }
         }
     }
 }

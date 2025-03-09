@@ -1,4 +1,4 @@
-package com.example.inventorymgtbackend.service;
+package com.example.inventory_mgt_backend.service;
 
 import com.example.inventorymgtbackend.entity.Warehouse;
 import com.example.inventorymgtbackend.repository.WarehouseRepository;
@@ -24,5 +24,16 @@ public class WarehouseService {
 
     public Warehouse saveWarehouse(Warehouse warehouse) {
         return warehouseRepository.save(warehouse);
+    }
+
+    // 新增更新仓库容积的方法
+    public boolean updateWarehouseVolume(Long warehouseId, int volumeChange) {
+        Warehouse warehouse = getWarehouseById(warehouseId);
+        if (warehouse != null && warehouse.canUpdateVolume(volumeChange)) {
+            warehouse.setUsedVolume(warehouse.getUsedVolume() + volumeChange);
+            saveWarehouse(warehouse);
+            return true;
+        }
+        return false;
     }
 }
